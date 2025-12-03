@@ -27,12 +27,18 @@ const Index = () => {
     { time: '12:00', subject: 'Английский', room: '203', teacher: 'Смирнова Е.А.' },
   ];
 
-  const homework = [
-    { subject: 'Математика', task: 'Решить задачи №15-20 из учебника', deadline: '15 дек', completed: true },
-    { subject: 'Физика', task: 'Подготовить доклад про законы Ньютона', deadline: '16 дек', completed: false },
-    { subject: 'Русский язык', task: 'Написать сочинение на тему "Зима"', deadline: '17 дек', completed: false },
-    { subject: 'История', task: 'Прочитать параграф 12, ответить на вопросы', deadline: '14 дек', completed: true },
-  ];
+  const [homework, setHomework] = useState([
+    { id: 1, subject: 'Математика', task: 'Решить задачи №15-20 из учебника', deadline: '15 дек', completed: true },
+    { id: 2, subject: 'Физика', task: 'Подготовить доклад про законы Ньютона', deadline: '16 дек', completed: false },
+    { id: 3, subject: 'Русский язык', task: 'Написать сочинение на тему "Зима"', deadline: '17 дек', completed: false },
+    { id: 4, subject: 'История', task: 'Прочитать параграф 12, ответить на вопросы', deadline: '14 дек', completed: true },
+  ]);
+
+  const toggleHomework = (id: number) => {
+    setHomework(prev => prev.map(hw => 
+      hw.id === id ? { ...hw, completed: !hw.completed } : hw
+    ));
+  };
 
   const importantDates = [
     { date: '15 дек', event: 'Контрольная по математике', type: 'exam' },
@@ -167,15 +173,16 @@ const Index = () => {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-3">
-                      {homework.map((hw, index) => (
+                      {homework.map((hw) => (
                         <div
-                          key={index}
-                          className={`p-4 rounded-xl border-2 transition-all ${
-                            hw.completed ? 'bg-success/5 border-success/30' : 'bg-card hover:shadow-md'
+                          key={hw.id}
+                          onClick={() => toggleHomework(hw.id)}
+                          className={`p-4 rounded-xl border-2 transition-all cursor-pointer ${
+                            hw.completed ? 'bg-success/5 border-success/30' : 'bg-card hover:shadow-md hover:border-primary'
                           }`}
                         >
                           <div className="flex items-start gap-3">
-                            <div className="mt-1">
+                            <div className="mt-1 transition-transform hover:scale-110">
                               {hw.completed ? (
                                 <Icon name="CheckCircle2" size={24} className="text-success" />
                               ) : (
@@ -184,7 +191,7 @@ const Index = () => {
                             </div>
                             <div className="flex-grow">
                               <h4 className="font-semibold">{hw.subject}</h4>
-                              <p className={`text-sm mt-1 ${hw.completed ? 'line-through text-muted-foreground' : ''}`}>
+                              <p className={`text-sm mt-1 transition-all ${hw.completed ? 'line-through text-muted-foreground' : ''}`}>
                                 {hw.task}
                               </p>
                               <Badge variant="outline" className="mt-2">
